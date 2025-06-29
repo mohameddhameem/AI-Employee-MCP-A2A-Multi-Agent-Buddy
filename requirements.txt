@@ -1,9 +1,9 @@
 # Phase 8: Production Dependencies for RAG-A2A-MCP System
 # Core dependencies for containerized deployment
 
-# Google ADK and AI APIs
-google-adk>=1.0.0
-openai>=1.0.0
+# Core AI Framework (placeholder for future LLM integration)
+# google-adk>=1.0.0
+# openai>=1.0.0
 
 # Web Framework
 fastapi>=0.104.0

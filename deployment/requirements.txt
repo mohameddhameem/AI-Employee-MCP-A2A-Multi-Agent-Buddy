@@ -1,9 +1,9 @@
 # Phase 8: Production Requirements
 # Comprehensive dependencies for production deployment
 
-# Core Framework Dependencies
-google-adk>=1.0.0
-openai>=1.0.0
+# Core Framework Dependencies (placeholder for future LLM integration)
+# google-adk>=1.0.0
+# openai>=1.0.0
 aiohttp>=3.8.0
 asyncio-mqtt>=0.16.0
 
