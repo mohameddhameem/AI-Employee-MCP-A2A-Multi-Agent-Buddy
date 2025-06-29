@@ -1,0 +1,185 @@
+# Phase 8: Local Deployment - Docker Compose Configuration
+# Production-ready multi-container orchestration
+
+version: '3.8'
+
+services:
+  # MCP Server - Core data service
+  mcp-server:
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile
+      target: mcp-server
+    container_name: rag-mcp-server
+    ports:
+      - "8000:8000"
+    environment:
+      - MCP_SERVER_PORT=8000
+      - MCP_SERVER_HOST=0.0.0.0
+      - PYTHONPATH=/app
+    volumes:
+      - ../data:/app/data:ro
+    networks:
+      - rag-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Main Agent - Primary coordination agent
+  main-agent:
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile
+      target: main-agent
+    container_name: rag-main-agent
+    ports:
+      - "8001:8001"
+    environment:
+      - MAIN_AGENT_PORT=8001
+      - MAIN_AGENT_HOST=0.0.0.0
+      - MCP_SERVER_PORT=8000
+      - MCP_SERVER_HOST=mcp-server
+      - A2A_SECRET_KEY=rag_a2a_mcp_secret
+      - PYTHONPATH=/app
+    networks:
+      - rag-network
+    depends_on:
+      mcp-server:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+  # HR Agent - Human resources specialist
+  hr-agent:
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile
+      target: hr-agent
+    container_name: rag-hr-agent
+    ports:
+      - "8002:8002"
+    environment:
+      - HR_AGENT_PORT=8002
+      - HR_AGENT_HOST=0.0.0.0
+      - MCP_SERVER_PORT=8000
+      - MCP_SERVER_HOST=mcp-server
+      - A2A_SECRET_KEY=rag_a2a_mcp_secret
+      - PYTHONPATH=/app
+    networks:
+      - rag-network
+    depends_on:
+      mcp-server:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+  # Greeting Agent - Social interaction specialist
+  greeting-agent:
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile
+      target: greeting-agent
+    container_name: rag-greeting-agent
+    ports:
+      - "8003:8003"
+    environment:
+      - GREETING_AGENT_PORT=8003
+      - GREETING_AGENT_HOST=0.0.0.0
+      - A2A_SECRET_KEY=rag_a2a_mcp_secret
+      - PYTHONPATH=/app
+    networks:
+      - rag-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+  # NGINX Reverse Proxy (Optional)
+  nginx:
+    image: nginx:alpine
+    container_name: rag-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    networks:
+      - rag-network
+    depends_on:
+      - main-agent
+      - hr-agent
+      - greeting-agent
+    restart: unless-stopped
+    profiles:
+      - proxy
+
+  # Monitoring with Prometheus (Optional)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: rag-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    networks:
+      - rag-network
+    restart: unless-stopped
+    profiles:
+      - monitoring
+
+  # Grafana Dashboard (Optional)
+  grafana:
+    image: grafana/grafana:latest
+    container_name: rag-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    networks:
+      - rag-network
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+    profiles:
+      - monitoring
+
+networks:
+  rag-network:
+    driver: bridge
+    name: rag-a2a-mcp-network
+
+volumes:
+  prometheus_data:
+    name: rag-prometheus-data
+  grafana_data:
+    name: rag-grafana-data

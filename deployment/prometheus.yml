@@ -1,0 +1,60 @@
+# Phase 8: Prometheus Monitoring Configuration
+# Service monitoring and metrics collection
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+scrape_configs:
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # MCP Server monitoring
+  - job_name: 'mcp-server'
+    static_configs:
+      - targets: ['mcp-server:8000']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    params:
+      format: ['prometheus']
+
+  # Main Agent monitoring
+  - job_name: 'main-agent'
+    static_configs:
+      - targets: ['main-agent:8001']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  # HR Agent monitoring
+  - job_name: 'hr-agent'
+    static_configs:
+      - targets: ['hr-agent:8002']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  # Greeting Agent monitoring
+  - job_name: 'greeting-agent'
+    static_configs:
+      - targets: ['greeting-agent:8003']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  # NGINX monitoring (if nginx-prometheus-exporter is used)
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['nginx:9113']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+# Alerting configuration (optional)
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093

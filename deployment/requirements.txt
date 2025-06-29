@@ -1,0 +1,56 @@
+# Phase 8: Production Requirements
+# Comprehensive dependencies for production deployment
+
+# Core Framework Dependencies
+google-adk>=1.0.0
+openai>=1.0.0
+aiohttp>=3.8.0
+asyncio-mqtt>=0.16.0
+
+# Web Framework
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.0.0
+
+# Database & Data
+sqlite3
+pandas>=2.0.0
+numpy>=1.24.0
+
+# HTTP Client & Security
+requests>=2.31.0
+httpx>=0.25.0
+cryptography>=41.0.0
+
+# Async Support
+asyncio
+aiofiles>=23.0.0
+
+# Production Server
+gunicorn>=21.0.0
+
+# Monitoring & Logging
+structlog>=23.0.0
+prometheus-client>=0.17.0
+psutil>=5.9.0
+
+# Development & Testing
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.1.0
+black>=23.0.0
+isort>=5.12.0
+mypy>=1.5.0
+
+# Optional: Enhanced Features
+chromadb>=0.4.0         # Vector database
+langchain>=0.1.0        # LLM framework
+sentence-transformers   # Embeddings
+tiktoken               # Token counting
+
+# Docker & Deployment
+docker>=6.1.0
+docker-compose>=1.29.0
+
+# Environment Management
+python-dotenv>=1.0.0
