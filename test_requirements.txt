@@ -1,0 +1,43 @@
+# Testing dependencies for RAG-A2A-MCP validation tests
+# Install with: pip install -r test_requirements.txt
+
+# Core testing framework
+pytest>=7.0.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.0.0
+pytest-mock>=3.10.0
+pytest-timeout>=2.1.0
+
+# Additional testing utilities
+coverage>=7.0.0
+mock>=4.0.3
+
+# HTTP testing (for API endpoints)
+httpx>=0.24.0
+requests-mock>=1.10.0
+
+# Async testing utilities
+asynctest>=0.13.0
+
+# Test data generation
+faker>=18.0.0
+
+# Performance testing
+pytest-benchmark>=4.0.0
+
+# Test reporting
+pytest-html>=3.1.0
+pytest-json-report>=1.5.0
+
+# Code quality checks
+flake8>=6.0.0
+black>=23.0.0
+isort>=5.12.0
+
+# Dependencies for mocking external services
+responses>=0.23.0
+aioresponses>=0.7.4
+
+# For testing LLM integration (when ready)
+# openai>=1.0.0  # Commented out until needed
+# langchain>=0.1.0  # Commented out until needed

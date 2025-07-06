@@ -124,7 +124,7 @@ class ServiceManager:
     async def start_service(self, service_name: str) -> bool:
         """Start a specific service"""
         if service_name not in self.services:
-            print(f"❌ Unknown service: {service_name}")
+            print(f"ERROR: Unknown service: {service_name}")
             return False
         
         service = self.services[service_name]
@@ -132,12 +132,12 @@ class ServiceManager:
         # Check dependencies
         for dep in service.dependencies:
             if self.service_status.get(dep) != ServiceStatus.RUNNING:
-                print(f"⚠️ Dependency '{dep}' not running for '{service_name}'")
+                print(f"WARNING: Dependency '{dep}' not running for '{service_name}'")
                 # Auto-start dependency
                 if not await self.start_service(dep):
                     return False
         
-        print(f"🚀 Starting {service.name}...")
+        print(f"Starting {service.name}...")
         self.service_status[service_name] = ServiceStatus.STARTING
         
         try:
@@ -163,23 +163,23 @@ class ServiceManager:
             # Wait for service to be ready
             if await self._wait_for_health(service_name, service.start_timeout):
                 self.service_status[service_name] = ServiceStatus.RUNNING
-                print(f"✅ {service.name} started successfully on port {service.port}")
+                print(f"SUCCESS: {service.name} started successfully on port {service.port}")
                 return True
             else:
                 self.service_status[service_name] = ServiceStatus.FAILED
-                print(f"❌ {service.name} failed to start (health check failed)")
+                print(f"ERROR: {service.name} failed to start (health check failed)")
                 await self.stop_service(service_name)
                 return False
                 
         except Exception as e:
             self.service_status[service_name] = ServiceStatus.FAILED
-            print(f"❌ Failed to start {service.name}: {str(e)}")
+            print(f"ERROR: Failed to start {service.name}: {str(e)}")
             return False
     
     async def stop_service(self, service_name: str) -> bool:
         """Stop a specific service"""
         if service_name not in self.services:
-            print(f"❌ Unknown service: {service_name}")
+            print(f"ERROR: Unknown service: {service_name}")
             return False
         
         service = self.services[service_name]
@@ -188,7 +188,7 @@ class ServiceManager:
             self.service_status[service_name] = ServiceStatus.STOPPED
             return True
         
-        print(f"🛑 Stopping {service.name}...")
+        print(f"Stopping {service.name}...")
         self.service_status[service_name] = ServiceStatus.STOPPING
         
         try:
@@ -201,23 +201,23 @@ class ServiceManager:
             try:
                 process.wait(timeout=service.stop_timeout)
             except subprocess.TimeoutExpired:
-                print(f"⚠️ Force killing {service.name}")
+                print(f"WARNING: Force killing {service.name}")
                 process.kill()
                 process.wait()
             
             del self.processes[service_name]
             self.service_status[service_name] = ServiceStatus.STOPPED
-            print(f"✅ {service.name} stopped")
+            print(f"SUCCESS: {service.name} stopped")
             return True
             
         except Exception as e:
-            print(f"❌ Error stopping {service.name}: {str(e)}")
+            print(f"ERROR: Error stopping {service.name}: {str(e)}")
             self.service_status[service_name] = ServiceStatus.FAILED
             return False
     
     async def start_all(self) -> bool:
         """Start all services in dependency order"""
-        print("🚀 Starting RAG-A2A-MCP System")
+        print("Starting RAG-A2A-MCP System")
         print("=" * 40)
         
         # Determine start order based on dependencies
@@ -225,17 +225,17 @@ class ServiceManager:
         
         for service_name in start_order:
             if not await self.start_service(service_name):
-                print(f"❌ Failed to start {service_name}, aborting startup")
+                print(f"ERROR: Failed to start {service_name}, aborting startup")
                 return False
             await asyncio.sleep(2)  # Brief pause between services
         
-        print("\n✅ All services started successfully!")
+        print("\nSUCCESS: All services started successfully!")
         await self.status()
         return True
     
     async def stop_all(self) -> bool:
         """Stop all services"""
-        print("\n🛑 Stopping RAG-A2A-MCP System")
+        print("\nStopping RAG-A2A-MCP System")
         print("=" * 40)
         
         # Stop in reverse dependency order
@@ -247,12 +247,12 @@ class ServiceManager:
             if not await self.stop_service(service_name):
                 success = False
         
-        print("\n✅ All services stopped")
+        print("\nSUCCESS: All services stopped")
         return success
     
     async def restart_service(self, service_name: str) -> bool:
         """Restart a specific service"""
-        print(f"🔄 Restarting {self.services[service_name].name}...")
+        print(f"Restarting {self.services[service_name].name}...")
         await self.stop_service(service_name)
         await asyncio.sleep(2)
         return await self.start_service(service_name)
@@ -265,19 +265,19 @@ class ServiceManager:
     
     async def status(self):
         """Display status of all services"""
-        print("\n📊 Service Status")
+        print("\nService Status")
         print("=" * 60)
         
         for service_name, service in self.services.items():
             status = self.service_status[service_name]
             status_icon = {
-                ServiceStatus.RUNNING: "✅",
-                ServiceStatus.STOPPED: "⭕",
-                ServiceStatus.STARTING: "🔄",
-                ServiceStatus.STOPPING: "🛑",
-                ServiceStatus.FAILED: "❌",
-                ServiceStatus.UNKNOWN: "❓"
-            }.get(status, "❓")
+                ServiceStatus.RUNNING: "[RUNNING]",
+                ServiceStatus.STOPPED: "[STOPPED]",
+                ServiceStatus.STARTING: "[STARTING]",
+                ServiceStatus.STOPPING: "[STOPPING]",
+                ServiceStatus.FAILED: "[FAILED]",
+                ServiceStatus.UNKNOWN: "[UNKNOWN]"
+            }.get(status, "[UNKNOWN]")
             
             health_status = ""
             if status == ServiceStatus.RUNNING:
@@ -348,7 +348,7 @@ class ServiceManager:
     
     def _signal_handler(self, signum, frame):
         """Handle shutdown signals"""
-        print(f"\n🛑 Received signal {signum}, shutting down...")
+        print(f"\nReceived signal {signum}, shutting down...")
         asyncio.create_task(self.stop_all())
 
 async def main():
@@ -356,7 +356,7 @@ async def main():
     manager = ServiceManager()
     
     if len(sys.argv) < 2:
-        print("🎛️ RAG-A2A-MCP Service Manager")
+        print("RAG-A2A-MCP Service Manager")
         print("=" * 40)
         print("Usage:")
         print("  python deployment/service_manager.py start")
@@ -391,13 +391,13 @@ async def main():
         await manager.status()
     elif command == "health":
         health = await manager.health_check()
-        print("\n🏥 Health Check Results")
+        print("\nHealth Check Results")
         print("=" * 30)
         for service_name, is_healthy in health.items():
-            status = "✅ Healthy" if is_healthy else "❌ Unhealthy"
+            status = "HEALTHY" if is_healthy else "UNHEALTHY"
             print(f"{service_name}: {status}")
     else:
-        print(f"❌ Unknown command: {command}")
+        print(f"ERROR: Unknown command: {command}")
 
 if __name__ == "__main__":
     asyncio.run(main())

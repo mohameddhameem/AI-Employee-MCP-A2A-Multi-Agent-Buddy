@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-Phase 8: Production Deployment Test Suite
+Phase 8:        print("Starting Production Deployment Tests")
+        print("=" * 50)roduction Deployment Test Suite
 Comprehensive testing for the deployed RAG-A2A-MCP system
 """
 
@@ -13,7 +14,7 @@ from typing import Dict, Any, List
 from dataclasses import dataclass
 
 @dataclass
-class TestResult:
+class ProductionTestResult:
     """Test result data structure"""
     test_name: str
     success: bool
@@ -31,7 +32,7 @@ class ProductionTestSuite:
             "hr_agent": "http://localhost:8002",
             "greeting_agent": "http://localhost:8003"
         }
-        self.results: List[TestResult] = []
+        self.results: List[ProductionTestResult] = []
     
     async def run_all_tests(self) -> Dict[str, Any]:
         """Run comprehensive test suite"""
@@ -68,7 +69,7 @@ class ProductionTestSuite:
                     async with session.get(f"{base_url}/health", timeout=aiohttp.ClientTimeout(total=10)) as response:
                         duration = time.time() - start_time
                         success = response.status == 200
-                        result = TestResult(
+                        result = ProductionTestResult(
                             test_name=f"Health Check - {service_name}",
                             success=success,
                             duration=duration,
@@ -76,7 +77,7 @@ class ProductionTestSuite:
                         )
                         
                         if success:
-                            print(f"✅ {service_name:<15} - {duration:.2f}s")
+                            print(f"SUCCESS: {service_name:<15} - {duration:.2f}s")
                         else:
                             print(f"❌ {service_name:<15} - Status {response.status}")
                             result.error_message = f"HTTP {response.status}"
@@ -86,7 +87,7 @@ class ProductionTestSuite:
             except Exception as e:
                 duration = time.time() - start_time
                 print(f"❌ {service_name:<15} - Connection Error")
-                self.results.append(TestResult(
+                self.results.append(ProductionTestResult(
                     test_name=f"Health Check - {service_name}",
                     success=False,
                     duration=duration,
@@ -95,7 +96,7 @@ class ProductionTestSuite:
     
     async def test_mcp_server_functionality(self):
         """Test MCP server core functionality"""
-        print("\n🔧 Testing MCP Server Functionality")
+        print("\nTesting MCP Server Functionality")
         print("-" * 40)
         
         mcp_tests = [
@@ -127,12 +128,12 @@ class ProductionTestSuite:
                         
                         if success:
                             response_data = await response.json()
-                            print(f"✅ {tool_name:<25} - {duration:.2f}s")
+                            print(f"SUCCESS: {tool_name:<25} - {duration:.2f}s")
                         else:
                             response_data = None
                             print(f"❌ {tool_name:<25} - Status {response.status}")
                         
-                        self.results.append(TestResult(
+                        self.results.append(ProductionTestResult(
                             test_name=f"MCP Tool - {tool_name}",
                             success=success,
                             duration=duration,
@@ -143,7 +144,7 @@ class ProductionTestSuite:
             except Exception as e:
                 duration = time.time() - start_time
                 print(f"❌ {tool_name:<25} - Error: {str(e)}")
-                self.results.append(TestResult(
+                self.results.append(ProductionTestResult(
                     test_name=f"MCP Tool - {tool_name}",
                     success=False,
                     duration=duration,
@@ -152,7 +153,7 @@ class ProductionTestSuite:
     
     async def test_agent_functionality(self):
         """Test individual agent functionality"""
-        print("\n🤖 Testing Agent Functionality")
+        print("\nTesting Agent Functionality")
         print("-" * 35)
         
         agent_tests = [
@@ -180,12 +181,12 @@ class ProductionTestSuite:
                         
                         if success:
                             response_data = await response.json()
-                            print(f"✅ {agent_name:<12} - {duration:.2f}s")
+                            print(f"SUCCESS: {agent_name:<12} - {duration:.2f}s")
                         else:
                             response_data = None
                             print(f"❌ {agent_name:<12} - Status {response.status}")
                         
-                        self.results.append(TestResult(
+                        self.results.append(ProductionTestResult(
                             test_name=f"Agent Query - {agent_name}",
                             success=success,
                             duration=duration,
@@ -196,7 +197,7 @@ class ProductionTestSuite:
             except Exception as e:
                 duration = time.time() - start_time
                 print(f"❌ {agent_name:<12} - Error: {str(e)}")
-                self.results.append(TestResult(
+                self.results.append(ProductionTestResult(
                     test_name=f"Agent Query - {agent_name}",
                     success=False,
                     duration=duration,
@@ -205,7 +206,7 @@ class ProductionTestSuite:
     
     async def test_a2a_communication(self):
         """Test A2A protocol communication"""
-        print("\n🔗 Testing A2A Communication")
+        print("\nTesting A2A Communication")
         print("-" * 30)
         
         # Test main agent delegating to HR agent
@@ -226,12 +227,12 @@ class ProductionTestSuite:
                     
                     if success:
                         response_data = await response.json()
-                        print(f"✅ A2A Delegation - {duration:.2f}s")
+                        print(f"SUCCESS: A2A Delegation - {duration:.2f}s")
                     else:
                         response_data = None
                         print(f"❌ A2A Delegation - Status {response.status}")
                     
-                    self.results.append(TestResult(
+                    self.results.append(ProductionTestResult(
                         test_name="A2A Protocol - Delegation",
                         success=success,
                         duration=duration,
@@ -242,7 +243,7 @@ class ProductionTestSuite:
         except Exception as e:
             duration = time.time() - start_time
             print(f"❌ A2A Delegation - Error: {str(e)}")
-            self.results.append(TestResult(
+            self.results.append(ProductionTestResult(
                 test_name="A2A Protocol - Delegation",
                 success=False,
                 duration=duration,
@@ -251,7 +252,7 @@ class ProductionTestSuite:
     
     async def test_performance(self):
         """Test system performance under load"""
-        print("\n⚡ Testing Performance")
+        print("\nTesting Performance")
         print("-" * 25)
         
         # Concurrent requests test
@@ -270,10 +271,10 @@ class ProductionTestSuite:
             successful_requests = sum(1 for r in results if not isinstance(r, Exception))
             success_rate = (successful_requests / concurrent_requests) * 100
             
-            print(f"✅ Concurrent Requests - {concurrent_requests} requests in {duration:.2f}s")
+            print(f"SUCCESS: Concurrent Requests - {concurrent_requests} requests in {duration:.2f}s")
             print(f"   Success Rate: {success_rate:.1f}% ({successful_requests}/{concurrent_requests})")
             
-            self.results.append(TestResult(
+            self.results.append(ProductionTestResult(
                 test_name="Performance - Concurrent Requests",
                 success=success_rate >= 80,  # Consider 80%+ success rate as passing
                 duration=duration,
@@ -287,7 +288,7 @@ class ProductionTestSuite:
         except Exception as e:
             duration = time.time() - start_time
             print(f"❌ Concurrent Requests - Error: {str(e)}")
-            self.results.append(TestResult(
+            self.results.append(ProductionTestResult(
                 test_name="Performance - Concurrent Requests",
                 success=False,
                 duration=duration,
@@ -321,17 +322,17 @@ class ProductionTestSuite:
         total_duration = sum(r.duration for r in self.results)
         
         print("\n" + "=" * 60)
-        print("📊 PRODUCTION DEPLOYMENT TEST REPORT")
+        print("PRODUCTION DEPLOYMENT TEST REPORT")
         print("=" * 60)
-        print(f"🎯 Tests Run: {total_tests}")
-        print(f"✅ Successful: {successful_tests}")
-        print(f"❌ Failed: {failed_tests}")
-        print(f"📈 Success Rate: {success_rate:.1f}%")
-        print(f"⏱️ Total Duration: {total_duration:.2f}s")
-        print(f"⚡ Average Duration: {total_duration/total_tests:.2f}s per test")
+        print(f"Tests Run: {total_tests}")
+        print(f"Successful: {successful_tests}")
+        print(f"Failed: {failed_tests}")
+        print(f"Success Rate: {success_rate:.1f}%")
+        print(f"Total Duration: {total_duration:.2f}s")
+        print(f"Average Duration: {total_duration/total_tests:.2f}s per test")
         
         if failed_tests > 0:
-            print(f"\n❌ Failed Tests:")
+            print(f"\nFailed Tests:")
             for result in self.results:
                 if not result.success:
                     print(f"   • {result.test_name}: {result.error_message}")
@@ -339,13 +340,13 @@ class ProductionTestSuite:
         print("\n" + "=" * 60)
         
         if success_rate >= 90:
-            print("🎉 EXCELLENT - Production system is performing optimally!")
+            print("EXCELLENT - Production system is performing optimally!")
         elif success_rate >= 75:
-            print("✅ GOOD - Production system is performing well with minor issues")
+            print("GOOD - Production system is performing well with minor issues")
         elif success_rate >= 50:
-            print("⚠️ WARNING - Production system has significant issues")
+            print("WARNING - Production system has significant issues")
         else:
-            print("🚨 CRITICAL - Production system requires immediate attention")
+            print("CRITICAL - Production system requires immediate attention")
         
         return {
             "total_tests": total_tests,
@@ -367,7 +368,7 @@ class ProductionTestSuite:
 
 async def main():
     """Run production deployment tests"""
-    print("🚀 RAG-A2A-MCP Production Deployment Test Suite")
+    print("RAG-A2A-MCP Production Deployment Test Suite")
     print("Testing the production deployment of all services...")
     
     test_suite = ProductionTestSuite()

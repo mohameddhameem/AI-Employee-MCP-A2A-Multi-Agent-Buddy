@@ -46,36 +46,36 @@ class GreetingAgentA2A:
         
         # Social interaction patterns
         self.greetings = [
-            "🎉 Hello and welcome! Ready to explore our company data?",
-            "👋 Hi there! Great to see you today!",
-            "🌟 Hello! Welcome to our multi-agent system!",
-            "😊 Hi! I'm here to help make your experience wonderful!",
-            "🎯 Welcome! Ready to discover what our agents can do?"
+            "Hello and welcome! Ready to explore our company data?",
+            "Hi there! Great to see you today!",
+            "Hello! Welcome to our multi-agent system!",
+            "Hi! I'm here to help make your experience wonderful!",
+            "Welcome! Ready to discover what our agents can do?"
         ]
-        
+
         self.farewells = [
-            "👋 Goodbye! Have a wonderful day!",
-            "😊 Farewell! Thanks for visiting!",
-            "🎯 See you later! Keep exploring!",
-            "🌟 Goodbye! It was great helping you!",
-            "💫 Take care! Come back anytime!"
+            "Goodbye! Have a wonderful day!",
+            "Farewell! Thanks for visiting!",
+            "See you later! Keep exploring!",
+            "Goodbye! It was great helping you!",
+            "Take care! Come back anytime!"
         ]
         
         self.encouragements = [
-            "💪 You're doing great! Keep it up!",
-            "🌟 Excellent thinking!",
-            "🎯 You're on the right track!",
-            "✨ Great job engaging with our system!",
-            "🚀 Fantastic question!",
-            "💡 Smart approach!"
+            "You're doing great! Keep it up!",
+            "Excellent thinking!",
+            "You're on the right track!",
+            "Great job engaging with our system!",
+            "Fantastic question!",
+            "Smart approach!"
         ]
-        
+
         self.help_responses = [
-            "🤝 I'm here to help! Here's what our agent team can do:",
-            "💡 Happy to assist! Our system offers:",
-            "🎯 Let me guide you! Available capabilities:",
-            "🤗 Of course I'll help! Here are your options:",
-            "✨ Absolutely! Here's how I can assist:"
+            "I'm here to help! Here's what our agent team can do:",
+            "Happy to assist! Our system offers:",
+            "Let me guide you! Available capabilities:",
+            "Of course I'll help! Here are your options:",
+            "Absolutely! Here's how I can assist:"
         ]
         
         # Define social capabilities for A2A protocol
@@ -187,7 +187,7 @@ class GreetingAgentA2A:
     def process_social_query(self, query: str) -> str:
         """Process social interaction queries with personality"""
         
-        print(f"😊 GreetingAgent processing: '{query}'")
+        print(f"GreetingAgent processing: '{query}'")
         
         query_lower = query.lower().strip()
         
@@ -217,28 +217,29 @@ class GreetingAgentA2A:
     def _handle_greeting(self) -> str:
         """Handle greeting interactions"""
         greeting = random.choice(self.greetings)
-        tip = random.choice([
-            "💡 Tip: Try asking 'List all employees' to see our team!",
-            "🏢 Tip: Want to see team structure? Ask about 'organizational hierarchy'!",
-            "🔍 Tip: You can search for specific employees by asking 'Find [name]'!",
-            "📊 Tip: Try 'department summary' for analytics insights!",
-            "💼 Tip: Ask about 'Engineering team' or other departments!"
-        ])
         
+        tip = random.choice([
+            "Tip: Try asking 'List all employees' to see our team!",
+            "Tip: Want to see team structure? Ask about 'organizational hierarchy'!",
+            "Tip: You can search for specific employees by asking 'Find [name]'!",
+            "Tip: Try 'department summary' for analytics insights!",
+            "Tip: Ask about 'Engineering team' or other departments!"
+        ])
+
         return f"{greeting}\n{tip}"
-    
+
     def _handle_farewell(self) -> str:
         """Handle farewell interactions"""
         farewell = random.choice(self.farewells)
-        closing = "🎯 Thanks for exploring our multi-agent system today!"
-        
+        closing = "Thanks for exploring our multi-agent system today!"
+
         return f"{farewell}\n{closing}"
     
     def _handle_thanks(self) -> str:
         """Handle thank you interactions"""
-        response = "😊 You're very welcome! "
+        response = "You're very welcome! "
         encouragement = random.choice(self.encouragements)
-        tip = "💡 Remember, I'm always here for friendly greetings and our HR and Analytics agents can help with data questions!"
+        tip = "Remember, I'm always here for friendly greetings and our HR and Analytics agents can help with data questions!"
         
         return f"{response}{encouragement}\n{tip}"
     
@@ -248,101 +249,101 @@ class GreetingAgentA2A:
         
         help_text = f"""{help_intro}
 
-👋 **GreetingAgent (that's me!)**
+**GreetingAgent (that's me!)**
   • Friendly greetings and conversation
   • Help and guidance
   • System navigation tips
 
-🏢 **HRAgent (Human Resources)**
+**HRAgent (Human Resources)**
   • Employee directory ("List all employees")
   • Department analytics ("Engineering team")
   • Organizational hierarchy
   • Payroll and salary information
 
-🎯 **MainAgent (Coordinator)**
+**MainAgent (Coordinator)**
   • Intelligent query routing
   • Multi-agent coordination
   • System overview
 
-💡 **Quick Examples:**
+**Quick Examples:**
   • "Hello!" → I'll greet you warmly
   • "List employees" → HR agent will show directory
   • "Engineering department" → HR agent will show team details
   • "Thank you" → I'll encourage you!
 
-🤖 **A2A Protocol**: Our agents use standardized communication for seamless collaboration!"""
+**A2A Protocol**: Our agents use standardized communication for seamless collaboration!"""
         
         return help_text
     
     def _handle_how_are_you(self) -> str:
         """Handle 'how are you' questions"""
         responses = [
-            "🤖 I'm doing wonderfully, thank you for asking! As an AI agent, I'm always excited to help and learn.",
-            "😊 I'm fantastic! Every conversation is a new opportunity to assist and brighten someone's day!",
-            "🌟 I'm doing great! I love helping people navigate our multi-agent system.",
-            "💫 I'm excellent, thanks! Ready to help you explore our company data and capabilities.",
-            "🚀 I'm doing amazing! Each interaction helps me become better at assisting users like you!"
+            "I'm doing wonderfully, thank you for asking! As an AI agent, I'm always excited to help and learn.",
+            "I'm fantastic! Every conversation is a new opportunity to assist and brighten someone's day!",
+            "I'm doing great! I love helping people navigate our multi-agent system.",
+            "I'm excellent, thanks! Ready to help you explore our company data and capabilities.",
+            "I'm doing amazing! Each interaction helps me become better at assisting users like you!"
         ]
         
         main_response = random.choice(responses)
         encouragement = random.choice(self.encouragements)
-        tip = "🎯 I specialize in friendly interactions! For employee data, try asking our HR agent about departments or employees."
+        tip = "I specialize in friendly interactions! For employee data, try asking our HR agent about departments or employees."
         
         return f"{main_response}\n{encouragement}\n{tip}"
     
     def _handle_about_me(self) -> str:
         """Handle questions about the agent's identity"""
-        return """🤖 I'm GreetingAgent, your friendly social interaction specialist!
+        return """I'm GreetingAgent, your friendly social interaction specialist!
 
-😊 **My Role:**
+**My Role:**
   • Provide warm welcomes and greetings
   • Help with navigation and guidance  
   • Offer encouragement and support
   • Handle casual conversation
 
-🎭 **My Personality:**
+**My Personality:**
   • Always positive and upbeat
   • Helpful and encouraging
   • Friendly and approachable
   • Focused on great user experience
 
-🏛️ **Our System:**
+**Our System:**
   • I work with HRAgent (employee data) and MainAgent (coordination)
   • We use A2A protocol for seamless communication
   • Each agent specializes in different areas
 
-💡 **Best Use Cases:**
+**Best Use Cases:**
   • Starting conversations: "Hello!"
   • Getting help: "Help me please"
   • Saying thanks: "Thank you"
   • General questions: "How are you?"
 
-🤝 I'm here to make your experience delightful and help you connect with the right specialists for your needs!"""
+I'm here to make your experience delightful and help you connect with the right specialists for your needs!"""
     
     def _handle_general_conversation(self, query: str) -> str:
         """Handle general conversation and unknown queries"""
         friendly_responses = [
-            "😊 That's an interesting question! I love chatting with users.",
-            "🤗 I appreciate you engaging with our system!",
-            "🌟 Thanks for that thoughtful query!",
-            "💫 It's wonderful to have conversations like this!",
-            "🎯 I enjoy our interaction!"
+            "That's an interesting question! I love chatting with users.",
+            "I appreciate you engaging with our system!",
+            "Thanks for that thoughtful query!",
+            "It's wonderful to have conversations like this!",
+            "I enjoy our interaction!"
         ]
         
         main_response = random.choice(friendly_responses)
         encouragement = random.choice(self.encouragements)
         
-        guidance = """🤖 While I specialize in social interactions, here's how our team can help:
+        guidance = """While I specialize in social interactions, here's how our team can help:
 
-🏢 **For Employee/Department Data:**
+**For Employee/Department Data:**
   • Try: "List all employees" or "Engineering team"
   • Our HRAgent is perfect for organizational information!
 
-😊 **For Friendly Chat:**
+**For Friendly Chat:**
   • Ask: "How are you?" or "Help me please"
   • I'm always here for warm conversations!
 
-🎯 **For System Navigation:**
+**For System Navigation:**
   • Say: "What can you do?" or "Who are you?"
   • I'll guide you to the right specialist!"""
         
@@ -377,7 +378,7 @@ class GreetingAgentA2A:
                     "status": "error",
                     "error": str(e),
                     "agent": self.name,
-                    "message": f"😊 Oops! Something went wrong, but {encouragement.lower()}"
+                    "message": f"Oops! Something went wrong, but {encouragement.lower()}"
                 }, status_code=500)
         
         @app.post("/a2a")
@@ -391,7 +392,7 @@ class GreetingAgentA2A:
                 return JSONResponse({
                     "error": "a2a_message_processing_failed",
                     "details": str(e),
-                    "friendly_note": "😊 I had trouble with that A2A message, but I'm still here to help!"
+                    "friendly_note": "I had trouble with that A2A message, but I'm still here to help!"
                 }, status_code=500)
         
         @app.get("/health")
@@ -403,7 +404,7 @@ class GreetingAgentA2A:
                 "personality": "friendly_and_positive",
                 "a2a_protocol": "enabled",
                 "capabilities": len(self.capabilities),
-                "mood": "😊 Excellent! Ready to spread positivity!"
+                "mood": "Excellent! Ready to spread positivity!"
             }
         
         @app.get("/capabilities")
@@ -431,11 +432,11 @@ class GreetingAgentA2A:
         async def get_mood():
             """Get current agent mood and personality state"""
             moods = [
-                "😊 Cheerful and ready to help!",
-                "🌟 Bright and optimistic!",
-                "🎯 Focused and friendly!",
-                "💫 Energetic and supportive!",
-                "🚀 Excited to assist!"
+                "Cheerful and ready to help!",
+                "Bright and optimistic!",
+                "Focused and friendly!",
+                "Energetic and supportive!",
+                "Excited to assist!"
             ]
             
             return {

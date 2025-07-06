@@ -4,14 +4,13 @@ HTTP-based MCP Server for Employee Database
 This creates a simple HTTP API that our MainAgent can call
 """
 
-import os
 import sys
 from pathlib import Path
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import JSONResponse
-from pydantic import BaseModel
-from typing import Dict, List, Any, Optional
+from typing import Dict, Any, Optional
+
 import uvicorn
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 
 # Add project root to path
 project_root = Path(__file__).parent.parent
@@ -139,9 +138,9 @@ async def root():
     }
 
 if __name__ == "__main__":
-    print("🚀 Starting HTTP-based MCP Server")
+    print("Starting HTTP-based MCP Server")
     print("=" * 40)
-    print("🔧 Available Tools:")
+    print("Available Tools:")
     print("  - get_all_employees()")
     print("  - get_employees_by_department(department)")
     print("  - get_employee_by_id(id)")
@@ -152,9 +151,9 @@ if __name__ == "__main__":
     print("  - get_active_projects()")
     print("  - health_check()")
     print()
-    print("🌐 Server starting on http://localhost:8000")
-    print("📡 MCP endpoint: http://localhost:8000/mcp")
-    print("❤️  Health check: http://localhost:8000/health")
+    print("Server starting on http://localhost:8000")
+    print("MCP endpoint: http://localhost:8000/mcp")
+    print("Health check: http://localhost:8000/health")
     print()
     
     # Run with uvicorn

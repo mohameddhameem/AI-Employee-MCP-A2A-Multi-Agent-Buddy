@@ -194,7 +194,7 @@ class HRAgentA2A:
     def process_hr_query(self, query: str) -> str:
         """Process HR queries with enhanced formatting"""
         
-        print(f"🏢 HRAgent processing: '{query}'")
+        print(f"HRAgent processing: '{query}'")
         
         query_lower = query.lower().strip()
         
@@ -243,19 +243,18 @@ class HRAgentA2A:
         employees = self._extract_data_from_mcp_result(result, "list")
         
         if employees is None:
-            return f"❌ Error accessing employee data: {result.get('error', 'Unknown error')}"
+            return f"Error accessing employee data: {result.get('error', 'Unknown error')}"
         
-        if not employees:
-            return "📋 No employees found in the database."
-        
-        response = f"📋 Employee Directory ({len(employees)} total employees):\n"
+        if not employees:            return "No employees found in the database."
+
+        response = f"Employee Directory ({len(employees)} total employees):\n"
         
         for emp in employees:
             name = emp.get("name", "Unknown")
             dept = emp.get("department", "Unknown")
             salary = emp.get("salary", 0)
             
-            response += f"👤 {name} - {dept} Dept. - ${salary:,}/year\n"
+            response += f"{name} - {dept} Dept. - ${salary:,}/year\n"
         
         return response
     
@@ -266,21 +265,21 @@ class HRAgentA2A:
         employees = self._extract_data_from_mcp_result(result, "list")
         
         if employees is None:
-            return f"❌ Error accessing {department} data: {result.get('error', 'Unknown error')}"
+            return f"Error accessing {department} data: {result.get('error', 'Unknown error')}"
         
         if not employees:
-            return f"🏢 No employees found in {department} department."
+            return f"No employees found in {department} department."
         
         # Calculate analytics
         total_employees = len(employees)
         total_salary = sum(emp.get("salary", 0) for emp in employees)
         avg_salary = total_salary // total_employees if total_employees > 0 else 0
         
-        response = f"🏢 {department} Department Overview:\n"
-        response += f"👥 Team Size: {total_employees} employees\n"
-        response += f"💰 Average Salary: ${avg_salary:,}\n"
-        response += f"💼 Total Department Payroll: ${total_salary:,}\n\n"
-        response += f"👤 Team Members:\n"
+        response = f"{department} Department Overview:\n"
+        response += f"Team Size: {total_employees} employees\n"
+        response += f"Average Salary: ${avg_salary:,}\n"
+        response += f"Total Department Payroll: ${total_salary:,}\n\n"
+        response += f"Team Members:\n"
         
         for emp in employees:
             name = emp.get("name", "Unknown")
@@ -298,29 +297,29 @@ class HRAgentA2A:
         dept_data = self._extract_data_from_mcp_result(result, "dict")
         
         if dept_data is None:
-            return f"❌ Error accessing department data: {result.get('error', 'Unknown error')}"
+            return f"Error accessing department data: {result.get('error', 'Unknown error')}"
         
         if not dept_data:
-            return "📊 No department data available."
+            return "No department data available."
         
         # Get total employee count
         all_employees_result = self.mcp.call_tool("get_all_employees")
         all_employees = self._extract_data_from_mcp_result(all_employees_result, "list")
         total_employees = len(all_employees) if all_employees else 0
         
-        response = "🏢 HR Department Analytics:\n"
+        response = "HR Department Analytics:\n"
         response += "=" * 40 + "\n"
-        response += f"👥 Total Workforce: {total_employees} employees\n\n"
+        response += f"Total Workforce: {total_employees} employees\n\n"
         
         for dept, info in dept_data.items():
             count = info.get("count", 0)
             avg_salary = info.get("avg_salary", 0)
             total_salary = info.get("total_salary", 0)
             
-            response += f"🏢 **{dept}**\n"
-            response += f"  👥 Employees: {count}\n"
-            response += f"  💰 Average Salary: ${avg_salary:,}\n"
-            response += f"  💼 Department Payroll: ${total_salary:,}\n\n"
+            response += f"**{dept}**\n"
+            response += f"  Employees: {count}\n"
+            response += f"  Average Salary: ${avg_salary:,}\n"
+            response += f"  Department Payroll: ${total_salary:,}\n\n"
         
         return response
     
@@ -334,20 +333,20 @@ class HRAgentA2A:
         dept_data = self._extract_data_from_mcp_result(dept_result, "dict")
         
         if employees is None or dept_data is None:
-            return "❌ Error accessing HR analytics data"
+            return "Error accessing HR analytics data"
         
         total_employees = len(employees)
         total_payroll = sum(emp.get("salary", 0) for emp in employees)
         avg_company_salary = total_payroll // total_employees if total_employees > 0 else 0
         
-        response = "🏢 HR Department Analytics:\n"
+        response = "HR Department Analytics:\n"
         response += "=" * 40 + "\n"
-        response += f"👥 Total Workforce: {total_employees} employees\n"
-        response += f"💰 Total Company Payroll: ${total_payroll:,}/year\n"
-        response += f"📊 Average Company Salary: ${avg_company_salary:,}/year\n"
-        response += f"🏢 Active Departments: {len(dept_data)}\n\n"
-        
-        response += "📈 Department Breakdown:\n"
+        response += f"Total Workforce: {total_employees} employees\n"
+        response += f"Total Company Payroll: ${total_payroll:,}/year\n"
+        response += f"Average Company Salary: ${avg_company_salary:,}/year\n"
+        response += f"Active Departments: {len(dept_data)}\n\n"
+
+        response += "Department Breakdown:\n"
         for dept, info in dept_data.items():
             count = info.get("count", 0)
             percentage = (count / total_employees * 100) if total_employees > 0 else 0
@@ -362,7 +361,7 @@ class HRAgentA2A:
         hierarchy = self._extract_data_from_mcp_result(result, "dict")
         
         if hierarchy is None:
-            return f"❌ Error accessing hierarchy data: {result.get('error', 'Unknown error')}"
+            return f"Error accessing hierarchy data: {result.get('error', 'Unknown error')}"
         
         if not hierarchy:
             return "👑 No organizational hierarchy data available."
@@ -372,7 +371,7 @@ class HRAgentA2A:
         
         for manager_id, reports in hierarchy.items():
             if reports:  # Only show managers with reports
-                response += f"👤 Manager ID {manager_id}:\n"
+                response += f"Manager ID {manager_id}:\n"
                 for report in reports:
                     name = report.get("name", "Unknown")
                     dept = report.get("department", "Unknown")
@@ -388,12 +387,11 @@ class HRAgentA2A:
         employees = self._extract_data_from_mcp_result(result, "list")
         
         if employees is None:
-            return f"❌ Search failed: {result.get('error', 'Unknown error')}"
+            return f"Search failed: {result.get('error', 'Unknown error')}"
         
-        if not employees:
-            return f"🔍 No employees found matching '{search_term}'"
-        
-        response = f"🔍 Search Results for '{search_term}' ({len(employees)} found):\n"
+        if not employees:            return f"No employees found matching '{search_term}'"
+
+        response = f"Search Results for '{search_term}' ({len(employees)} found):\n"
         
         for emp in employees:
             name = emp.get("name", "Unknown")
@@ -401,7 +399,7 @@ class HRAgentA2A:
             salary = emp.get("salary", 0)
             hire_date = emp.get("hire_date", "Unknown")
             
-            response += f"👤 {name} - {dept} - ${salary:,} - Hired: {hire_date}\n"
+            response += f"{name} - {dept} - ${salary:,} - Hired: {hire_date}\n"
         
         return response
     
@@ -420,35 +418,35 @@ class HRAgentA2A:
                     return self._format_search_results(word, employees)
         
         # Fallback to general HR help
-        return """🤔 I can help you with HR queries! Try asking:
+        return """I can help you with HR queries! Try asking:
 
-📋 **Employee Information:**
+**Employee Information:**
   • "List all employees"
   • "Search for Alice" 
   • "Find John"
 
-🏢 **Department Data:**
+**Department Data:**
   • "Show Engineering team"
   • "Department summary"
   • "Marketing department"
 
-📊 **Analytics:**
+**Analytics:**
   • "HR analytics"
   • "Organizational hierarchy"
   • "Payroll summary"
 
-💡 **Tip:** Be specific about what employee or department information you need!"""
+**Tip:** Be specific about what employee or department information you need!"""
     
     def _format_search_results(self, term: str, employees: list) -> str:
         """Format search results"""
-        response = f"🔍 Found {len(employees)} result(s) for '{term}':\n"
+        response = f"Found {len(employees)} result(s) for '{term}':\n"
         
         for emp in employees:
             name = emp.get("name", "Unknown")
             dept = emp.get("department", "Unknown")
             salary = emp.get("salary", 0)
             
-            response += f"👤 {name} - {dept} - ${salary:,}/year\n"
+            response += f"{name} - {dept} - ${salary:,}/year\n"
         
         return response
     
@@ -549,37 +547,37 @@ class HRAgentA2A:
                 }
             }
         
-        print(f"🏢 Starting {self.name} (A2A-Enhanced) on http://{host}:{port}")
-        print("🔧 A2A-Enhanced HR Capabilities:")
+        print(f"Starting {self.name} (A2A-Enhanced) on http://{host}:{port}")
+        print("A2A-Enhanced HR Capabilities:")
         for cap in self.capabilities:
-            print(f"  📋 {cap.name}: {cap.description}")
+            print(f"  {cap.name}: {cap.description}")
         print()
-        print("🌐 Connecting to MCP Server: http://localhost:8000")
+        print("Connecting to MCP Server: http://localhost:8000")
         
         # Test MCP connection
         test_result = self.mcp.call_tool("health_check")
         if "error" not in test_result:
-            print("✅ MCP Server Status: Connected")
+            print("MCP Server Status: Connected")
         else:
-            print(f"❌ MCP Server Status: {test_result.get('error')}")
+            print(f"MCP Server Status: {test_result.get('error')}")
         
         print()
-        print("📡 A2A Protocol: Enabled")
-        print(f"🔐 Message Authentication: {'Enabled' if self.a2a.secret_key else 'Disabled'}")
+        print("A2A Protocol: Enabled")
+        print(f"Message Authentication: {'Enabled' if self.a2a.secret_key else 'Disabled'}")
         print()
         
         uvicorn.run(app, host=host, port=port)
 
 # Create the A2A-enhanced HR agent
 if __name__ == "__main__":
-    print("🏢 A2A-Enhanced HRAgent - Human Resources Specialist")
+    print("A2A-Enhanced HRAgent - Human Resources Specialist")
     print("=" * 55)
-    print("🔧 Phase 6 A2A Enhancements:")
-    print("  📡 A2A protocol communication support")
-    print("  🔐 Secure message authentication")
-    print("  📋 Detailed capability advertisement")
-    print("  🏥 Enhanced health monitoring")
-    print("  🤝 Delegation request handling")
+    print("Phase 6 A2A Enhancements:")
+    print("  A2A protocol communication support")
+    print("  Secure message authentication")
+    print("  Detailed capability advertisement")
+    print("  Enhanced health monitoring")
+    print("  Delegation request handling")
     print()
     
     hr_agent_a2a = HRAgentA2A()

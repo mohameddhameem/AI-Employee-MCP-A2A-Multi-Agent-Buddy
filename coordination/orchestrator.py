@@ -121,8 +121,8 @@ class MultiAgentOrchestrator:
                              context: Dict[str, Any] = None) -> WorkflowResult:
         """Execute a multi-agent workflow with specified coordination pattern"""
         
-        print(f"🎭 Orchestrator: Starting workflow '{workflow_id}' with {pattern.value} coordination")
-        print(f"📋 Tasks: {len(tasks)} tasks across {len(set(task.agent_id for task in tasks))} agents")
+        print(f"Orchestrator: Starting workflow '{workflow_id}' with {pattern.value} coordination")
+        print(f"Tasks: {len(tasks)} tasks across {len(set(task.agent_id for task in tasks))} agents")
         
         start_time = time.time()
         context = context or {}
@@ -151,7 +151,7 @@ class MultiAgentOrchestrator:
             
             self.workflow_results[workflow_id] = workflow_result
             
-            print(f"✅ Workflow '{workflow_id}' completed in {execution_time:.2f}s")
+            print(f"SUCCESS: Workflow '{workflow_id}' completed in {execution_time:.2f}s")
             return workflow_result
             
         except Exception as e:
@@ -168,7 +168,7 @@ class MultiAgentOrchestrator:
             )
             
             self.workflow_results[workflow_id] = error_result
-            print(f"❌ Workflow '{workflow_id}' failed: {str(e)}")
+            print(f"Workflow '{workflow_id}' failed: {str(e)}")
             return error_result
     
     async def _execute_sequential(self, workflow_id: str, tasks: List[TaskNode], context: Dict[str, Any]) -> Dict[str, Any]:
@@ -176,7 +176,7 @@ class MultiAgentOrchestrator:
         results = {}
         
         for task in tasks:
-            print(f"🔄 Sequential: Executing task '{task.task_id}' on agent '{task.agent_id}'")
+            print(f"Sequential: Executing task '{task.task_id}' on agent '{task.agent_id}'")
             
             # Update context with previous results
             task.input_data.update({"previous_results": results, "context": context})
@@ -192,7 +192,7 @@ class MultiAgentOrchestrator:
     
     async def _execute_parallel(self, workflow_id: str, tasks: List[TaskNode], context: Dict[str, Any]) -> Dict[str, Any]:
         """Execute tasks in parallel across multiple agents"""
-        print(f"⚡ Parallel: Executing {len(tasks)} tasks simultaneously")
+        print(f"Parallel: Executing {len(tasks)} tasks simultaneously")
         
         # Prepare all tasks
         for task in tasks:
@@ -220,7 +220,7 @@ class MultiAgentOrchestrator:
         pipeline_data = context.copy()
         
         for i, task in enumerate(tasks):
-            print(f"🔗 Pipeline: Stage {i+1}/{len(tasks)} - Task '{task.task_id}' on agent '{task.agent_id}'")
+            print(f"Pipeline: Stage {i+1}/{len(tasks)} - Task '{task.task_id}' on agent '{task.agent_id}'")
             
             # Feed pipeline data into current task
             task.input_data.update({
@@ -261,7 +261,7 @@ class MultiAgentOrchestrator:
             if not ready_tasks:
                 raise Exception("Circular dependency or unresolvable dependencies detected")
             
-            print(f"🌳 Hierarchical: Executing {len(ready_tasks)} tasks with satisfied dependencies")
+            print(f"Hierarchical: Executing {len(ready_tasks)} tasks with satisfied dependencies")
             
             # Execute ready tasks in parallel
             for task in ready_tasks:
@@ -290,7 +290,7 @@ class MultiAgentOrchestrator:
     
     async def _execute_consensus(self, workflow_id: str, tasks: List[TaskNode], context: Dict[str, Any]) -> Dict[str, Any]:
         """Execute tasks and reach consensus on the result"""
-        print(f"🤝 Consensus: Gathering opinions from {len(tasks)} agents")
+        print(f"Consensus: Gathering opinions from {len(tasks)} agents")
         
         # Execute all tasks (same query to different agents)
         for task in tasks:
@@ -316,7 +316,7 @@ class MultiAgentOrchestrator:
     
     async def _execute_competitive(self, workflow_id: str, tasks: List[TaskNode], context: Dict[str, Any]) -> Dict[str, Any]:
         """Execute tasks competitively - best result wins"""
-        print(f"🏆 Competitive: Racing {len(tasks)} agents for best result")
+        print(f"Competitive: Racing {len(tasks)} agents for best result")
         
         # Execute all tasks with same input
         for task in tasks:
@@ -346,12 +346,12 @@ class MultiAgentOrchestrator:
     
     async def _execute_collaborative(self, workflow_id: str, tasks: List[TaskNode], context: Dict[str, Any]) -> Dict[str, Any]:
         """Execute tasks collaboratively - agents work together"""
-        print(f"👥 Collaborative: {len(tasks)} agents working together")
+        print(f"Collaborative: {len(tasks)} agents working together")
         
         # Phase 1: Information gathering
         gather_tasks = [task for task in tasks if task.metadata.get("phase") == "gather"]
         if gather_tasks:
-            print("📊 Phase 1: Information gathering")
+            print("Phase 1: Information gathering")
             gathered_info = {}
             for task in gather_tasks:
                 task.input_data.update({"context": context, "phase": "gather"})
@@ -363,7 +363,7 @@ class MultiAgentOrchestrator:
         # Phase 2: Collaborative processing
         process_tasks = [task for task in tasks if task.metadata.get("phase") == "process"]
         if process_tasks:
-            print("🔄 Phase 2: Collaborative processing")
+            print("Phase 2: Collaborative processing")
             for task in process_tasks:
                 task.input_data.update({
                     "context": context,
@@ -434,7 +434,7 @@ class MultiAgentOrchestrator:
             # Retry logic
             if task.retry_count < task.max_retries:
                 task.retry_count += 1
-                print(f"⚠️ Task '{task.task_id}' failed, retrying ({task.retry_count}/{task.max_retries})")
+                print(f"WARNING: Task '{task.task_id}' failed, retrying ({task.retry_count}/{task.max_retries})")
                 await asyncio.sleep(1)  # Brief delay before retry
                 return await self._execute_single_task(task)
             else:
@@ -565,18 +565,18 @@ class MultiAgentOrchestrator:
         }
 
 if __name__ == "__main__":
-    print("🎭 Multi-Agent Orchestrator - Phase 7")
+    print("Multi-Agent Orchestrator - Phase 7")
     print("=" * 50)
     print("Advanced coordination patterns available:")
-    print("  🔄 Sequential - Tasks in order")
-    print("  ⚡ Parallel - Simultaneous execution")
-    print("  🔗 Pipeline - Data flows through stages")
-    print("  🌳 Hierarchical - Dependency-based execution")
-    print("  🤝 Consensus - Agents agree on result")
-    print("  🏆 Competitive - Best result wins")
-    print("  👥 Collaborative - Agents work together")
+    print("  Sequential - Tasks in order")
+    print("  Parallel - Simultaneous execution")
+    print("  Pipeline - Data flows through stages")
+    print("  Hierarchical - Dependency-based execution")
+    print("  Consensus - Agents agree on result")
+    print("  Competitive - Best result wins")
+    print("  Collaborative - Agents work together")
     print()
     
     orchestrator = MultiAgentOrchestrator()
-    print(f"🎭 Orchestrator '{orchestrator.name}' initialized")
-    print(f"📡 Known agents: {list(orchestrator.known_agents.keys())}")
+    print(f"Orchestrator '{orchestrator.name}' initialized")
+    print(f"Known agents: {list(orchestrator.known_agents.keys())}")

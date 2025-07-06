@@ -152,37 +152,37 @@ class EmployeeDB:
 
 # Test the database functions
 if __name__ == "__main__":
-    print("🔍 Testing Database Query Utility")
+    print("Testing Database Query Utility")
     print("=" * 40)
     
     try:
         db = EmployeeDB()
         
         # Test basic queries
-        print("📋 All Employees:")
+        print("All Employees:")
         employees = db.get_all_employees()
         for emp in employees[:3]:  # Show first 3
             print(f"   {emp['name']} - {emp['department']} - ${emp['salary']:,}")
         print(f"   ... and {len(employees)-3} more")
         
-        print(f"\n🏢 Engineering Department:")
+        print(f"\nEngineering Department:")
         eng_employees = db.get_employees_by_department("Engineering")
         for emp in eng_employees:
             print(f"   {emp['name']} - ${emp['salary']:,}")
         
-        print(f"\n📊 Department Summary:")
+        print(f"\nDepartment Summary:")
         summary = db.get_department_summary()
         for dept in summary:
             print(f"   {dept['department']}: {dept['employee_count']} employees, avg ${dept['avg_salary']:,.0f}")
         
-        print(f"\n📈 Overall Statistics:")
+        print(f"\nOverall Statistics:")
         stats = db.get_employee_summary()
         print(f"   Total Employees: {stats['total_employees']}")
         print(f"   Total Departments: {stats['total_departments']}")
         print(f"   Average Salary: ${stats['avg_salary']:,.0f}")
         print(f"   Total Payroll: ${stats['total_budget']:,.0f}")
         
-        print("\n✅ Database Query Utility working correctly!")
+        print("\nSUCCESS: Database Query Utility working correctly!")
         
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f"ERROR: {e}")

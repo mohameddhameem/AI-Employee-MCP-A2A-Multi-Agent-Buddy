@@ -68,12 +68,12 @@ class MainAgentA2A:
         
     def discover_agents(self) -> Dict[str, AgentProfile]:
         """Discover agents using A2A protocol"""
-        print("🔍 Discovering agents using A2A protocol...")
+        print("Discovering agents using A2A protocol...")
         
         broadcast_endpoints = list(self.agent_endpoints.values())
         discovered_agents = self.a2a.discover_agents(broadcast_endpoints)
         
-        print(f"✅ Discovered {len(discovered_agents)} agents via A2A protocol")
+        print(f"SUCCESS: Discovered {len(discovered_agents)} agents via A2A protocol")
         
         return {agent.agent_id: agent for agent in discovered_agents}
     
@@ -180,44 +180,44 @@ class MainAgentA2A:
         # Determine best agent using A2A analysis
         best_agent, confidence = self.determine_best_agent_a2a(query)
         
-        print(f"🎯 A2A routing '{query}' to {best_agent} (confidence: {confidence:.2f})")
+        print(f"A2A routing '{query}' to {best_agent} (confidence: {confidence:.2f})")
         
         # Try A2A delegation first
         result = self.delegate_with_a2a(best_agent, query)
         
         # Fallback to HTTP if A2A fails
         if "error" in result and result.get("fallback_available"):
-            print(f"⚠️  A2A delegation failed, falling back to HTTP...")
+            print(f"WARNING: A2A delegation failed, falling back to HTTP...")
             result = self.fallback_to_http(best_agent, query)
         
         # Additional fallback to other agents
         if "error" in result and best_agent != "greeting_agent":
-            print(f"⚠️  Primary agent failed, trying greeting agent...")
+            print(f"WARNING: Primary agent failed, trying greeting agent...")
             fallback_result = self.fallback_to_http("greeting_agent", query)
             if "error" not in fallback_result:
                 response = fallback_result.get('result', 'No response')
-                return f"🔄 Primary agent unavailable, but I can help!\n\n{response}\n\n🤖 _Fallback response from GreetingAgent_"
+                return f"Primary agent unavailable, but I can help!\n\n{response}\n\n_Fallback response from GreetingAgent_"
         
         if "error" in result:
             # Ultimate fallback with A2A system status
             a2a_status = self.a2a.get_protocol_status()
             
-            return f"""🤔 I'm having trouble with the agent network right now.
+            return f"""I'm having trouble with the agent network right now.
 
 **Your query:** "{query}"
 
-🏥 **A2A Protocol Status:**
-  📡 Protocol Version: {a2a_status['protocol_version']}
-  🤖 Known Agents: {a2a_status['known_agents']}
-  🔒 Security: {'Enabled' if a2a_status['security_enabled'] else 'Disabled'}
-  ⏳ Pending Requests: {a2a_status['pending_requests']}
+**A2A Protocol Status:**
+  Protocol Version: {a2a_status['protocol_version']}
+  Known Agents: {a2a_status['known_agents']}
+  Security: {'Enabled' if a2a_status['security_enabled'] else 'Disabled'}
+  Pending Requests: {a2a_status['pending_requests']}
 
-💡 **Direct suggestions:**
+**Direct suggestions:**
   • For employee data: Try "list all employees" or "Engineering department"
   • For greetings: Try "hello" or "help"
   • For system info: Try "who are you"
 
-🔧 **System Issue:** {result.get('error', 'Unknown error')}
+**System Issue:** {result.get('error', 'Unknown error')}
 
 Please try again, or check if all agent servers are running!"""
         
@@ -226,9 +226,9 @@ Please try again, or check if all agent servers are running!"""
         agent_name = result.get('agent', best_agent)
         protocol = result.get('protocol', 'unknown')
         
-        protocol_badge = "🔗 A2A" if protocol == "a2a" else "📡 HTTP"
+        protocol_badge = "A2A" if protocol == "a2a" else "HTTP"
         
-        return f"{response}\n\n🤖 _Response from {agent_name} via {protocol_badge} protocol_"
+        return f"{response}\n\n_Response from {agent_name} via {protocol_badge} protocol_"
     
     def serve(self, host: str = "localhost", port: int = None):
         """Start A2A-enhanced HTTP server"""
@@ -372,20 +372,20 @@ Please try again, or check if all agent servers are running!"""
                 }
             }
         
-        print(f"🎯 Starting {self.name} (A2A-Enhanced Coordinator) on http://{host}:{port}")
-        print("🏛️ A2A System Architecture:")
-        print("  🎯 MainAgent - A2A coordination and routing")
-        print(f"  😊 GreetingAgent - Social interaction (port {os.getenv('GREETING_AGENT_PORT', '8003')})")
-        print(f"  🏢 HRAgent - Employee data and analytics (port {os.getenv('HR_AGENT_PORT', '8002')})")
+        print(f"Starting {self.name} (A2A-Enhanced Coordinator) on http://{host}:{port}")
+        print("A2A System Architecture:")
+        print("  MainAgent - A2A coordination and routing")
+        print(f"  GreetingAgent - Social interaction (port {os.getenv('GREETING_AGENT_PORT', '8003')})")
+        print(f"  HRAgent - Employee data and analytics (port {os.getenv('HR_AGENT_PORT', '8002')})")
         print()
-        print("🔗 A2A Communication Flow:")
+        print("A2A Communication Flow:")
         print("  User → MainAgent → A2A Protocol → Specialized Agent → MCP Server → Database")
         print()
-        print("📡 A2A Features:")
-        print("  🔐 Message authentication with HMAC signatures")
-        print("  🔍 Automatic agent discovery")
-        print("  🏥 Health monitoring and status tracking")
-        print("  📡 HTTP fallback for compatibility")
+        print("A2A Features:")
+        print("  Message authentication with HMAC signatures")
+        print("  Automatic agent discovery")
+        print("  Health monitoring and status tracking")
+        print("  HTTP fallback for compatibility")
         print()
         
         # Cleanup periodic expired requests
@@ -404,15 +404,15 @@ Please try again, or check if all agent servers are running!"""
 
 # Create the A2A-enhanced main agent
 if __name__ == "__main__":
-    print("🎯 A2A-Enhanced MainAgent - Advanced Multi-Agent Coordinator")
+    print("A2A-Enhanced MainAgent - Advanced Multi-Agent Coordinator")
     print("=" * 60)
-    print("🏛️ Phase 6 Capabilities:")
-    print("  🔗 Agent-to-Agent (A2A) protocol implementation")
-    print("  🔐 Secure message authentication and verification")
-    print("  🔍 Automatic agent discovery and registration")
-    print("  🏥 Advanced health monitoring and status tracking")
-    print("  📡 HTTP fallback for legacy compatibility")
-    print("  ⚡ Intelligent query routing with confidence scoring")
+    print("Phase 6 Capabilities:")
+    print("  Agent-to-Agent (A2A) protocol implementation")
+    print("  Secure message authentication and verification")
+    print("  Automatic agent discovery and registration")
+    print("  Advanced health monitoring and status tracking")
+    print("  HTTP fallback for legacy compatibility")
+    print("  Intelligent query routing with confidence scoring")
     print()
     
     main_agent_a2a = MainAgentA2A()

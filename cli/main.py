@@ -16,14 +16,14 @@ host = os.getenv("ADK_AGENT_HOST", "localhost")
 port = os.getenv("ADK_AGENT_PORT", "8001")
 agent_url = f"http://{host}:{port}"  # default ADK HTTP API root
 
-print("🛠️  Starting CLI for MainAgent")
-print(f"▶️  Sending queries to {agent_url}")
+print("Starting CLI for MainAgent")
+print(f"Sending queries to {agent_url}")
 print("Type 'exit' or 'quit' to stop.")
 
 while True:
     query = input(">>> ")
     if query.lower() in ("exit", "quit"):
-        print("👋 Goodbye!")
+        print("Goodbye!")
         break
 
     # Send query to ADK agent
@@ -36,6 +36,6 @@ while True:
         response.raise_for_status()
         data = response.json()
         result = data.get("result") or data.get("output") or data
-        print(f"📝 Response:\n{result}\n")
+        print(f"Response:\n{result}\n")
     except Exception as e:
-        print(f"❌ Error communicating with agent: {e}\n")
+        print(f"Error communicating with agent: {e}\n")
