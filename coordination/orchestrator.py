@@ -5,15 +5,13 @@ Advanced coordination engine for complex multi-agent workflows
 """
 
 import asyncio
-import json
 import os
 import sys
 import time
-import uuid
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Optional
 
 # Add project root to Python path
 project_root = Path(__file__).parent.parent

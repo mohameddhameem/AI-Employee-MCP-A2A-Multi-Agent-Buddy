@@ -11,12 +11,10 @@ This test suite validates:
 5. Context-aware response generation
 """
 
-import json
 import os
 import sys
 from pathlib import Path
-from typing import Any, Dict, List
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import patch
 
 import pytest
 

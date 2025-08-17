@@ -7,7 +7,6 @@ Skips gracefully if SDK modules are not importable.
 import os
 import sys
 from pathlib import Path
-from typing import Any, Dict, Optional
 
 import pytest
 from fastapi.testclient import TestClient

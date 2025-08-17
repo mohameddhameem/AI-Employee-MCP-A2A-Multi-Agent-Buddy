@@ -11,7 +11,6 @@ pytestmark = pytest.mark.skip(reason="Legacy /a2a/v1 tests removed; SDK /a2a is 
 
 import sys
 from pathlib import Path
-from typing import Any, Dict
 
 import pytest
 from fastapi.testclient import TestClient

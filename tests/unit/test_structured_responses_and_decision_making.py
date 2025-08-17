@@ -13,12 +13,10 @@ This test suite validates the assumptions about:
 """
 
 import asyncio
-import json
 import sys
 import time
 from pathlib import Path
-from typing import Any, Dict, List
-from unittest.mock import AsyncMock, Mock, patch
+from unittest.mock import Mock, patch
 
 import pytest
 

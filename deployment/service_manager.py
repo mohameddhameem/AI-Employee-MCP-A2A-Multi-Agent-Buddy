@@ -5,7 +5,6 @@ Production-ready service orchestration for the RAG-A2A-MCP system
 """
 
 import asyncio
-import json
 import os
 import signal
 import subprocess
@@ -14,7 +13,7 @@ import time
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 import aiohttp
 
@@ -351,7 +350,7 @@ class ServiceManager:
 
         return ordered
 
-    def _signal_handler(self, signum, frame):
+    def _signal_handler(self, signum, _frame):
         """Handle shutdown signals"""
         print(f"\nReceived signal {signum}, shutting down...")
         asyncio.create_task(self.stop_all())
