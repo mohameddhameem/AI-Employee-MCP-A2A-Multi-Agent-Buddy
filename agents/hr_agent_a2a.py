@@ -15,6 +15,12 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
+import logging
+from common.logging_config import configure_logging
+
+# Initialize logging
+configure_logging()
+logger = logging.getLogger(__name__)
 
 # Add project root to Python path
 project_root = Path(__file__).parent.parent
@@ -224,7 +230,6 @@ class HRAgentA2A:
             MessageType.CAPABILITY_RESPONSE,
             message.sender_id,
             {
-                "agent_id": self.agent_id,
                 "agent_type": self.agent_type,
                 "specialization": self.specialization,
                 "capabilities": capabilities_data,
@@ -273,21 +278,16 @@ class HRAgentA2A:
             return result
         elif expected_type == "dict" and isinstance(result, dict) and "content" not in result:
             return result
-
-        # Extract from wrapped response
         if isinstance(result, dict):
             return result.get("content", [] if expected_type == "list" else {})
-
         return [] if expected_type == "list" else {}
 
     def process_hr_query(self, query: str) -> str:
         """Process HR queries with enhanced formatting"""
+        # Normalize query for routing logic
+        query_lower = query.lower()
 
-        print(f"HRAgent processing: '{query}'")
-
-        query_lower = query.lower().strip()
-
-        # Enhanced query routing with A2A context
+    # Enhanced query routing with A2A context
         if any(word in query_lower for word in ["list", "all employees", "everyone", "directory"]):
             return self._get_formatted_employee_list()
 
@@ -378,7 +378,7 @@ class HRAgentA2A:
             salary = emp.get("salary", 0)
             hire_date = emp.get("hire_date", "Unknown")
 
-            response += f"  • {name} - ${salary:,}/year - Hired: {hire_date}\n"
+            response += f"  - {name} - ${salary:,}/year - Hired: {hire_date}\n"
 
         return response
 
@@ -442,7 +442,7 @@ class HRAgentA2A:
         for dept, info in dept_data.items():
             count = info.get("count", 0)
             percentage = (count / total_employees * 100) if total_employees > 0 else 0
-            response += f"  • {dept}: {count} employees ({percentage:.1f}%)\n"
+            response += f"  - {dept}: {count} employees ({percentage:.1f}%)\n"
 
         return response
 
@@ -456,9 +456,9 @@ class HRAgentA2A:
             return f"Error accessing hierarchy data: {result.get('error', 'Unknown error')}"
 
         if not hierarchy:
-            return "👑 No organizational hierarchy data available."
+            return "No organizational hierarchy data available."
 
-        response = "👑 Organizational Hierarchy:\n"
+        response = "Organizational Hierarchy:\n"
         response += "=" * 30 + "\n"
 
         for manager_id, reports in hierarchy.items():
@@ -467,7 +467,7 @@ class HRAgentA2A:
                 for report in reports:
                     name = report.get("name", "Unknown")
                     dept = report.get("department", "Unknown")
-                    response += f"  • {name} - {dept}\n"
+                    response += f"- {name} - {dept}\n"
                 response += "\n"
 
         return response
@@ -511,22 +511,22 @@ class HRAgentA2A:
                     return self._format_search_results(word, employees)
 
         # Fallback to general HR help
-        return """I can help you with HR queries! Try asking:
+                return """I can help you with HR queries! Try asking:
 
 **Employee Information:**
-  • "List all employees"
-  • "Search for Alice" 
-  • "Find John"
+    - "List all employees"
+    - "Search for Alice" 
+    - "Find John"
 
 **Department Data:**
-  • "Show Engineering team"
-  • "Department summary"
-  • "Marketing department"
+    - "Show Engineering team"
+    - "Department summary"
+    - "Marketing department"
 
 **Analytics:**
-  • "HR analytics"
-  • "Organizational hierarchy"
-  • "Payroll summary"
+    - "HR analytics"
+    - "Organizational hierarchy"
+    - "Payroll summary"
 
 **Tip:** Be specific about what employee or department information you need!"""
 
@@ -732,43 +732,37 @@ class HRAgentA2A:
 
         app = self.build_app(host, port)
 
-        print(f"Starting {self.name} (A2A-Enhanced) on http://{host}:{port}")
-        print("A2A-Enhanced HR Capabilities:")
+        logger.info(f"Starting {self.name} (A2A-Enhanced) on http://{host}:{port}")
+        logger.info("A2A-Enhanced HR Capabilities:")
         for cap in self.capabilities:
-            print(f"  {cap.name}: {cap.description}")
-        print()
-        print("Connecting to MCP Server: http://localhost:8000")
+            logger.debug(f"  {cap.name}: {cap.description}")
+        logger.debug("Connecting to MCP Server: http://localhost:8000")
 
         # Test MCP connection
         test_result = self.mcp.call_tool("health_check")
         if "error" not in test_result:
-            print("MCP Server Status: Connected")
+            logger.info("MCP Server Status: Connected")
         else:
-            print(f"MCP Server Status: {test_result.get('error')}")
+            logger.warning(f"MCP Server Status: {test_result.get('error')}")
 
-        print()
-        print("A2A Protocol: Enabled")
-        print(f"Message Authentication: {'Enabled' if self.a2a.secret_key else 'Disabled'}")
-        print()
+        logger.info("A2A Protocol: Enabled")
+        logger.info(f"Message Authentication: {'Enabled' if self.a2a.secret_key else 'Disabled'}")
 
         uvicorn.run(app, host=host, port=port)
 
 
-# Create the A2A-enhanced HR agent
+# Instantiate and serve in __main__
 if __name__ == "__main__":
-    print("A2A-Enhanced HRAgent - Human Resources Specialist")
-    print("=" * 55)
-    print("Phase 6 A2A Enhancements:")
-    print("  A2A protocol communication support")
-    print("  Secure message authentication")
-    print("  Detailed capability advertisement")
-    print("  Enhanced health monitoring")
-    print("  Delegation request handling")
-    print()
+    logger.info("A2A-Enhanced HRAgent - Human Resources Specialist")
+    logger.info("%s", '=' * 55)
+    logger.info("Phase 6 A2A Enhancements:")
+    logger.info("  A2A protocol communication support")
+    logger.info("  Secure message authentication")
+    logger.info("  Detailed capability advertisement")
+    logger.info("  Enhanced health monitoring")
+    logger.info("  Delegation request handling")
 
     hr_agent_a2a = HRAgentA2A()
-
     host = os.getenv("HR_AGENT_HOST", "localhost")
     port = int(os.getenv("HR_AGENT_PORT", "8002"))
-
-    hr_agent_a2a.serve(host=host, port=port)
+    hr_agent_a2a.serve(host, port)

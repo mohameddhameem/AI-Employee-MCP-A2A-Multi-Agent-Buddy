@@ -14,6 +14,12 @@ import uvicorn
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+import logging
+from common.logging_config import configure_logging
+
+# Initialize logging
+configure_logging()
+logger = logging.getLogger(__name__)
 from pydantic import BaseModel
 
 # Add project root to Python path
@@ -182,12 +188,12 @@ class MainAgentA2A:
 
     def discover_agents(self) -> Dict[str, AgentProfile]:
         """Discover agents using A2A protocol"""
-        print("Discovering agents using A2A protocol...")
+        logger.info("Discovering agents using A2A protocol...")
 
         broadcast_endpoints = list(self.agent_endpoints.values())
         discovered_agents = self.a2a.discover_agents(broadcast_endpoints)
 
-        print(f"SUCCESS: Discovered {len(discovered_agents)} agents via A2A protocol")
+        logger.info("SUCCESS: Discovered %d agents via A2A protocol", len(discovered_agents))
 
         return {agent.agent_id: agent for agent in discovered_agents}
 
@@ -612,25 +618,28 @@ Please try again, or check if all agent servers are running!"""
 
         app = self.build_app(host, port)
 
-        print(f"Starting {self.name} (A2A-Enhanced Coordinator) on http://{host}:{port}")
-        print("A2A System Architecture:")
-        print("  MainAgent - A2A coordination and routing")
-        print(
-            f"  GreetingAgent - Social interaction (port {os.getenv('GREETING_AGENT_PORT', '8003')})"
+        logger.info(
+            "Starting %s (A2A-Enhanced Coordinator) on http://%s:%s",
+            self.name,
+            host,
+            port,
         )
-        print(
-            f"  HRAgent - Employee data and analytics (port {os.getenv('HR_AGENT_PORT', '8002')})"
+        logger.debug("A2A System Architecture:")
+        logger.debug("  MainAgent - A2A coordination and routing")
+        logger.debug(
+            "  GreetingAgent - Social interaction (port %s)",
+            os.getenv("GREETING_AGENT_PORT", "8003"),
         )
-        print()
-        print("A2A Communication Flow:")
-        print("  User → MainAgent → A2A Protocol → Specialized Agent → MCP Server → Database")
-        print()
-        print("A2A Features:")
-        print("  Message authentication with HMAC signatures")
-        print("  Automatic agent discovery")
-        print("  Health monitoring and status tracking")
-        print("  HTTP fallback for compatibility")
-        print()
+        logger.debug(
+            "  HRAgent - Employee data and analytics (port %s)",
+            os.getenv("HR_AGENT_PORT", "8002"),
+        )
+        logger.debug(
+            "A2A Communication Flow: User → MainAgent → A2A Protocol → Specialized Agent → MCP Server → Database"
+        )
+        logger.debug(
+            "A2A Features: Message authentication with HMAC signatures, Automatic agent discovery, Health monitoring and status tracking, HTTP fallback for compatibility"
+        )
 
         # Cleanup periodic expired requests
         import threading
@@ -647,18 +656,17 @@ Please try again, or check if all agent servers are running!"""
         uvicorn.run(app, host=host, port=port)
 
 
-# Create the A2A-enhanced main agent
 if __name__ == "__main__":
-    print("A2A-Enhanced MainAgent - Advanced Multi-Agent Coordinator")
-    print("=" * 60)
-    print("Phase 6 Capabilities:")
-    print("  Agent-to-Agent (A2A) protocol implementation")
-    print("  Secure message authentication and verification")
-    print("  Automatic agent discovery and registration")
-    print("  Advanced health monitoring and status tracking")
-    print("  HTTP fallback for legacy compatibility")
-    print("  Intelligent query routing with confidence scoring")
-    print()
+    logger.info("A2A-Enhanced MainAgent - Advanced Multi-Agent Coordinator")
+    logger.info("%s", "=" * 60)
+    logger.info("Phase 6 Capabilities:")
+    logger.info("  Agent-to-Agent (A2A) protocol implementation")
+    logger.info("  Secure message authentication and verification")
+    logger.info("  Automatic agent discovery and registration")
+    logger.info("  Advanced health monitoring and status tracking")
+    logger.info("  HTTP fallback for legacy compatibility")
+    logger.info("  Intelligent query routing with confidence scoring")
+    # Instantiate and serve
 
     main_agent_a2a = MainAgentA2A()
 

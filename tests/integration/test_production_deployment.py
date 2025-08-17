@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
 """
-Phase 8:        print("Starting Production Deployment Tests")
-        print("=" * 50)roduction Deployment Test Suite
-Comprehensive testing for the deployed RAG-A2A-MCP system
+Production Deployment Test Suite
+Comprehensive testing for the deployed RAG-A2A-MCP system.
 """
 
 import asyncio
-import json
 import sys
 import time
 from dataclasses import dataclass
@@ -40,7 +38,7 @@ class ProductionTestSuite:
 
     async def run_all_tests(self) -> Dict[str, Any]:
         """Run comprehensive test suite"""
-        print("🧪 Starting Production Deployment Tests")
+        print("Starting Production Deployment Tests")
         print("=" * 60)
 
         # Health check tests
@@ -63,7 +61,7 @@ class ProductionTestSuite:
 
     async def test_health_checks(self):
         """Test health endpoints for all services"""
-        print("\n🏥 Testing Health Checks")
+        print("\nTesting Health Checks")
         print("-" * 30)
 
         for service_name, base_url in self.base_urls.items():
@@ -85,14 +83,14 @@ class ProductionTestSuite:
                         if success:
                             print(f"SUCCESS: {service_name:<15} - {duration:.2f}s")
                         else:
-                            print(f"❌ {service_name:<15} - Status {response.status}")
+                            print(f"ERROR: {service_name:<15} - Status {response.status}")
                             result.error_message = f"HTTP {response.status}"
 
                         self.results.append(result)
 
             except Exception as e:
                 duration = time.time() - start_time
-                print(f"❌ {service_name:<15} - Connection Error")
+                print(f"ERROR: {service_name:<15} - Connection Error")
                 self.results.append(
                     ProductionTestResult(
                         test_name=f"Health Check - {service_name}",
@@ -136,7 +134,7 @@ class ProductionTestSuite:
                             print(f"SUCCESS: {tool_name:<25} - {duration:.2f}s")
                         else:
                             response_data = None
-                            print(f"❌ {tool_name:<25} - Status {response.status}")
+                            print(f"ERROR: {tool_name:<25} - Status {response.status}")
 
                         self.results.append(
                             ProductionTestResult(
@@ -150,7 +148,7 @@ class ProductionTestSuite:
 
             except Exception as e:
                 duration = time.time() - start_time
-                print(f"❌ {tool_name:<25} - Error: {str(e)}")
+                print(f"ERROR: {tool_name:<25} - Error: {str(e)}")
                 self.results.append(
                     ProductionTestResult(
                         test_name=f"MCP Tool - {tool_name}",
@@ -191,7 +189,7 @@ class ProductionTestSuite:
                             print(f"SUCCESS: {agent_name:<12} - {duration:.2f}s")
                         else:
                             response_data = None
-                            print(f"❌ {agent_name:<12} - Status {response.status}")
+                            print(f"ERROR: {agent_name:<12} - Status {response.status}")
 
                         self.results.append(
                             ProductionTestResult(
@@ -205,7 +203,7 @@ class ProductionTestSuite:
 
             except Exception as e:
                 duration = time.time() - start_time
-                print(f"❌ {agent_name:<12} - Error: {str(e)}")
+                print(f"ERROR: {agent_name:<12} - Error: {str(e)}")
                 self.results.append(
                     ProductionTestResult(
                         test_name=f"Agent Query - {agent_name}",
@@ -241,7 +239,7 @@ class ProductionTestSuite:
                         print(f"SUCCESS: A2A Delegation - {duration:.2f}s")
                     else:
                         response_data = None
-                        print(f"❌ A2A Delegation - Status {response.status}")
+                        print(f"ERROR: A2A Delegation - Status {response.status}")
 
                     self.results.append(
                         ProductionTestResult(
@@ -255,7 +253,7 @@ class ProductionTestSuite:
 
         except Exception as e:
             duration = time.time() - start_time
-            print(f"❌ A2A Delegation - Error: {str(e)}")
+            print(f"ERROR: A2A Delegation - Error: {str(e)}")
             self.results.append(
                 ProductionTestResult(
                     test_name="A2A Protocol - Delegation",
@@ -308,7 +306,7 @@ class ProductionTestSuite:
 
         except Exception as e:
             duration = time.time() - start_time
-            print(f"❌ Concurrent Requests - Error: {str(e)}")
+            print(f"ERROR: Concurrent Requests - Error: {str(e)}")
             self.results.append(
                 ProductionTestResult(
                     test_name="Performance - Concurrent Requests",
@@ -353,10 +351,10 @@ class ProductionTestSuite:
         print(f"Average Duration: {total_duration/total_tests:.2f}s per test")
 
         if failed_tests > 0:
-            print(f"\nFailed Tests:")
+            print("\nFailed Tests:")
             for result in self.results:
                 if not result.success:
-                    print(f"   • {result.test_name}: {result.error_message}")
+                    print(f"   - {result.test_name}: {result.error_message}")
 
         print("\n" + "=" * 60)
 

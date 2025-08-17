@@ -15,6 +15,12 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
+import logging
+from common.logging_config import configure_logging
+
+# Initialize logging
+configure_logging()
+logger = logging.getLogger(__name__)
 
 # Add project root to Python path
 project_root = Path(__file__).parent.parent
@@ -705,10 +711,10 @@ I'm here to make your experience delightful and help you connect with the right 
                 "specialization": self.specialization,
                 "description": "A2A-enhanced social interaction specialist with friendly personality",
                 "personality_traits": [
-                    "😊 Friendly and approachable",
-                    "🌟 Always positive and upbeat",
-                    "💡 Helpful with guidance",
-                    "🎉 Encouraging and supportive",
+                    "Friendly and approachable",
+                    "Always positive and upbeat",
+                    "Helpful with guidance",
+                    "Encouraging and supportive",
                 ],
                 "capabilities": [cap.name for cap in self.capabilities],
                 "a2a_protocol": "enabled",
@@ -736,39 +742,30 @@ I'm here to make your experience delightful and help you connect with the right 
 
         app = self.build_app(host, port)
 
-        print(f"😊 Starting {self.name} (A2A-Enhanced) on http://{host}:{port}")
-        print("🎭 A2A-Enhanced Social Capabilities:")
+        logger.info(f"Starting {self.name} (A2A-Enhanced) on http://{host}:{port}")
+        logger.info("A2A-Enhanced Social Capabilities:")
         for cap in self.capabilities:
-            print(f"  💬 {cap.name}: {cap.description}")
-        print()
-        print("😊 Personality Traits:")
-        print("  😊 Friendly and approachable")
-        print("  🌟 Encouraging and supportive")
-        print("  💡 Helpful with guidance")
-        print("  🎉 Always positive and upbeat")
-        print()
-        print("📡 A2A Protocol: Enabled")
-        print(f"🔐 Message Authentication: {'Enabled' if self.a2a.secret_key else 'Disabled'}")
-        print()
+            logger.debug(f"  {cap.name}: {cap.description}")
+        logger.info("Personality Traits:")
+        for trait in self.greetings:
+            logger.debug(f"  {trait}")
+        logger.info("A2A Protocol: Enabled")
+        logger.info(f"Message Authentication: {'Enabled' if self.a2a.secret_key else 'Disabled'}")
 
         uvicorn.run(app, host=host, port=port)
 
 
-# Create the A2A-enhanced greeting agent
+# Instantiate and serve
 if __name__ == "__main__":
-    print("😊 A2A-Enhanced GreetingAgent - Social Interaction Specialist")
-    print("=" * 60)
-    print("🎭 Phase 6 A2A Enhancements:")
-    print("  📡 A2A protocol communication support")
-    print("  🔐 Secure message authentication")
-    print("  💬 Rich social capability advertisement")
-    print("  🏥 Personality-aware health monitoring")
-    print("  🤝 Friendly delegation request handling")
-    print()
-
+    logger.info("A2A-Enhanced GreetingAgent - Social Interaction Specialist")
+    logger.info("%s", '=' * 60)
+    logger.info("Phase 6 A2A Enhancements:")
+    logger.info("  A2A protocol communication support")
+    logger.info("  Secure message authentication")
+    logger.info("  Rich social capability advertisement")
+    logger.info("  Personality traits and positivity")
+    logger.info("  Friendly delegation request handling")
     greeting_agent_a2a = GreetingAgentA2A()
-
     host = os.getenv("GREETING_AGENT_HOST", "localhost")
     port = int(os.getenv("GREETING_AGENT_PORT", "8003"))
-
-    greeting_agent_a2a.serve(host=host, port=port)
+    greeting_agent_a2a.serve(host, port)
