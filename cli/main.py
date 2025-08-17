@@ -2,8 +2,9 @@
 import os
 import sys
 from pathlib import Path
-from dotenv import load_dotenv
+
 import requests
+from dotenv import load_dotenv
 
 # Add project root to path
 sys.path.append(str(Path(__file__).parent.parent))
@@ -29,9 +30,7 @@ while True:
     # Send query to ADK agent
     try:
         response = requests.post(
-            f"{agent_url}/task",
-            json={"input": query},
-            headers={"Content-Type": "application/json"}
+            f"{agent_url}/task", json={"input": query}, headers={"Content-Type": "application/json"}
         )
         response.raise_for_status()
         data = response.json()

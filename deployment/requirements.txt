@@ -54,3 +54,6 @@ docker-compose>=1.29.0
 
 # Environment Management
 python-dotenv>=1.0.0
+
+# A2A SDK (official) with HTTP server extras for FastAPI/Starlette integration
+a2a-sdk[http-server]>=0.3.0

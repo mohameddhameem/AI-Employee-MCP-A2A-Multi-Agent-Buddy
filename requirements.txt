@@ -31,6 +31,9 @@ structlog>=23.0.0
 # Environment management
 python-dotenv>=1.0.0
 
+# A2A SDK (official) with HTTP server extras for FastAPI/Starlette integration
+a2a-sdk[http-server]>=0.3.0
+
 # Development tools
 pytest>=7.4.0
 pytest-asyncio>=0.21.0

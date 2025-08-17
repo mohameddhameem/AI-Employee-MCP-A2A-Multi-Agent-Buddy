@@ -11,6 +11,14 @@ A production-ready multi-agent system demonstrating modern AI agent architecture
 
 This project implements a complete multi-agent ecosystem where AI agents collaborate to process natural language queries, retrieve data from databases, and coordinate complex workflows using industry-standard protocols.
 
+### Documentation
+
+All documentation is consolidated in this README. Quick links:
+- [Architecture](#architecture)
+- [A2A JSON-RPC and Agent Discovery](#a2a-json-rpc-and-agent-discovery)
+- [Testing](#testing)
+- [Production Deployment](#production-deployment)
+
 ### Key Features
 
 - **Multi-Agent Architecture** - Specialized agents for different domains (HR, Greetings, Data)
@@ -456,23 +464,24 @@ docker-compose logs -f | grep ERROR
 
 ### Latest Test Results
 
-**Test Suite Status: ALL TESTS PASSING**
+**Test Suite Status: Passing**
 
 ```
-Test Summary (as of July 5, 2025):
+Test Summary (as of Aug 17, 2025):
 ═══════════════════════════════════════════════════════════════════
-Total Tests: 63
-Passed: 63 (100%)
+Total Tests: 83
+Passed: 73
+Skipped: 10
 Failed: 0
-Execution Time: 2.13 seconds
+Execution Time: ~5.1 seconds
 Coverage: Integration + Unit Tests
 ═══════════════════════════════════════════════════════════════════
 
 Test Categories:
-• A2A Protocol Integration: 13/13 tests passed
-• Coordination Patterns: 9/9 tests passed
-• LLM Framework Integration: 19/19 tests passed
-• Structured Responses & Decision Making: 22/22 tests passed
+• A2A Protocol Integration
+• Coordination Patterns
+• LLM Framework Integration
+• Structured Responses & Decision Making
 
 Key Test Areas Validated:
 - Agent-to-Agent communication and authentication
@@ -488,13 +497,21 @@ Key Test Areas Validated:
 
 ```bash
 # Run comprehensive tests
-python test_production_deployment.py
+pytest -q
 
 # Test specific coordination patterns
-python test_phase7_coordination.py
+pytest -q tests/integration/test_coordination_patterns.py
 
 # Test A2A protocol
-python test_a2a_protocol.py
+pytest -q tests/integration/test_a2a_protocol_integration.py
+```
+
+### How to run tests (Windows PowerShell)
+
+If you're using the provided Conda environment (genai), run:
+
+```powershell
+conda run --live-stream --name genai python -m pytest -q
 ```
 
 ### Manual Testing
@@ -840,6 +857,33 @@ def new_tool(parameter: str) -> str:
 
 ## Technical Reference
 
+## A2A JSON-RPC and Agent Discovery
+
+This project exposes a spec-aligned JSON-RPC interface and discovery metadata on every agent. See details in this section below.
+
+SDK status (default):
+
+- We use the official A2A SDK (a2a-sdk[http-server]) by default (`USE_A2A_SDK=true`).
+- Endpoints provided via SDK:
+  - JSON-RPC endpoint: POST /a2a
+  - Agent Card: GET /.well-known/agent-card.json
+  - For compatibility, some agents also serve `/.well-known/agent.json` as an alias.
+  
+Legacy mode is deprecated and no longer enabled by default.
+
+These endpoints are available on Main Agent (8001), HR Agent (8002), and Greeting Agent (8003).
+
+### A2A SDK usage and upgrades
+
+- Package: `a2a-sdk[http-server]`
+- Current minimum version: `>=0.3.0` (pinned in `requirements.txt`)
+- Recommendation: pin to an exact minor once deployed (e.g. `a2a-sdk[http-server]==0.3.x`) to avoid breaking changes; periodically bump after reading release notes.
+- Upgrade checklist:
+  - Review SDK CHANGELOG for breaking changes to JSON-RPC shapes or discovery metadata
+  - Re-run the full test suite (unit + integration) and smoke tests
+  - Verify `/.well-known/agent-card.json` and POST `/a2a` behavior using the examples in this README
+  - For Docker: rebuild images and roll out gradually if running multiple replicas
+
 ### A2A Protocol Implementation
 
 The system implements the Agent-to-Agent protocol with:
@@ -877,14 +921,18 @@ Seven implemented patterns:
 ```
 rag-agent-project/
 ├── agents/                     # Agent implementations
-│   ├── main_agent_a2a.py      # Main coordination agent
-│   ├── hr_agent_a2a.py        # HR specialist agent
-│   ├── greeting_agent_a2a.py  # Greeting specialist agent
-│   └── base_agent.py          # Base agent class
+│   ├── main_agent_a2a.py      # Main coordination agent (A2A)
+│   ├── main_agent.py          # Main agent (legacy/simple)
+│   ├── hr_agent_a2a.py        # HR specialist agent (A2A)
+│   ├── hr_agent.py            # HR agent (legacy/simple)
+│   ├── greeting_agent_a2a.py  # Greeting specialist agent (A2A)
+│   ├── greeting_agent.py      # Greeting agent (legacy/simple)
+│   ├── main_agent_v2.py       # Alternate main agent variant
+│   ├── leave_agent_a2a.py     # Leave management agent (A2A)
+│   └── agent.py               # Shared agent helpers/utilities
 ├── coordination/               # Multi-agent coordination
 │   ├── orchestrator.py        # Workflow orchestrator
-│   ├── patterns.py            # Coordination patterns
-│   └── task_manager.py        # Task management
+│   └── workflow_examples.py   # Example coordination flows
 ├── data/                       # Database and utilities
 │   ├── employees.db           # SQLite database
 │   └── database_utils.py      # Database utilities
@@ -898,11 +946,20 @@ rag-agent-project/
 │   └── requirements.txt       # Production dependencies
 ├── mcp_server/                 # MCP server implementation
 │   ├── http_server.py         # HTTP-based MCP server
-│   └── tools.py               # MCP tool definitions
+│   ├── server.py              # MCP server entry / utilities
+│   └── start_server.py        # Launcher script
 ├── tests/                      # Test suites
-│   ├── test_production_deployment.py
-│   ├── test_phase7_coordination.py
-│   └── test_a2a_protocol.py
+│   ├── unit/
+│   │   ├── test_llm_framework_integration.py
+│   │   └── test_structured_responses_and_decision_making.py
+│   ├── integration/
+│   │   ├── test_a2a_protocol_integration.py
+│   │   ├── test_coordination_patterns.py
+│   │   ├── test_production_deployment.py
+│   │   ├── test_a2a_sdk_main_agent.py
+│   │   ├── test_a2a_sdk_hr_agent.py
+│   │   └── test_a2a_sdk_greeting_agent.py
+│   └── conftest.py
 ├── cli/                        # Command-line interface
 │   └── main.py                # Interactive CLI
 ├── requirements.txt            # Python dependencies
@@ -1031,7 +1088,7 @@ For support and questions:
 
 - **Issues**: GitHub Issues tab
 - **Discussions**: GitHub Discussions
-- **Documentation**: See `deployment/README.md` for detailed deployment guide
+- **Documentation**: This README contains all consolidated documentation
 - **Examples**: Check `tests/` directory for usage examples
 
 ---

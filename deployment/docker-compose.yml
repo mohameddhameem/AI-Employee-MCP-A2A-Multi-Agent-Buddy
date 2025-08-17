@@ -1,8 +1,6 @@
 # Phase 8: Local Deployment - Docker Compose Configuration
 # Production-ready multi-container orchestration
 
-version: '3.8'
-
 services:
   # MCP Server - Core data service
   mcp-server:
@@ -44,7 +42,8 @@ services:
       - MCP_SERVER_PORT=8000
       - MCP_SERVER_HOST=mcp-server
       - A2A_SECRET_KEY=rag_a2a_mcp_secret
-      - PYTHONPATH=/app
+    env_file:
+      - ../.env
     networks:
       - rag-network
     depends_on:
@@ -73,7 +72,8 @@ services:
       - MCP_SERVER_PORT=8000
       - MCP_SERVER_HOST=mcp-server
       - A2A_SECRET_KEY=rag_a2a_mcp_secret
-      - PYTHONPATH=/app
+    env_file:
+      - ../.env
     networks:
       - rag-network
     depends_on:
@@ -100,7 +100,8 @@ services:
       - GREETING_AGENT_PORT=8003
       - GREETING_AGENT_HOST=0.0.0.0
       - A2A_SECRET_KEY=rag_a2a_mcp_secret
-      - PYTHONPATH=/app
+    env_file:
+      - ../.env
     networks:
       - rag-network
     restart: unless-stopped
